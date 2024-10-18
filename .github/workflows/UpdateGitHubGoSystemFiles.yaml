@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is {TEMPLATEURL})
+        description: Template Repository URL (current is https://github.com/cegekaJG/AL-Go-PTE@cegeka)
         required: false
         default: ''
       downloadLatest:
@@ -36,7 +36,7 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@main
+        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@cegeka
         with:
           shell: powershell
 
@@ -45,19 +45,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@cegeka
         with:
           shell: powershell
 
       - name: Read settings
-        uses: cegekaJG/AL-Go-Actions/ReadSettings@main
+        uses: cegekaJG/AL-Go-Actions/ReadSettings@cegeka
         with:
           shell: powershell
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: cegekaJG/AL-Go-Actions/ReadSecrets@main
+        uses: cegekaJG/AL-Go-Actions/ReadSecrets@cegeka
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -93,7 +93,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: cegekaJG/AL-Go-Actions/CheckForUpdates@main
+        uses: cegekaJG/AL-Go-Actions/CheckForUpdates@cegeka
         with:
           shell: powershell
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -104,7 +104,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@cegeka
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

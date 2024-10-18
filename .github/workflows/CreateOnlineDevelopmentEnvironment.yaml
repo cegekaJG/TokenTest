@@ -50,7 +50,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@main
+        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@cegeka
         with:
           shell: powershell
 
@@ -59,19 +59,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@cegeka
         with:
           shell: powershell
 
       - name: Read settings
         id: ReadSettings
-        uses: cegekaJG/AL-Go-Actions/ReadSettings@main
+        uses: cegekaJG/AL-Go-Actions/ReadSettings@cegeka
         with:
           shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
-        uses: cegekaJG/AL-Go-Actions/ReadSecrets@main
+        uses: cegekaJG/AL-Go-Actions/ReadSecrets@cegeka
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -90,7 +90,7 @@ jobs:
             Write-Host "AdminCenterApiCredentials not provided, initiating Device Code flow"
             $ALGoHelperPath = "$([System.IO.Path]::GetTempFileName()).ps1"
             $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile('https://raw.githubusercontent.com/cegekaJG/AL-Go-Actions/main/AL-Go-Helper.ps1', $ALGoHelperPath)
+            $webClient.DownloadFile('https://raw.githubusercontent.com/cegekaJG/AL-Go-Actions/cegeka/AL-Go-Helper.ps1', $ALGoHelperPath)
             . $ALGoHelperPath
             DownloadAndImportBcContainerHelper
             $authContext = New-BcAuthContext -includeDeviceLogin -deviceLoginTimeout ([TimeSpan]::FromSeconds(0))
@@ -112,13 +112,13 @@ jobs:
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       - name: Read settings
-        uses: cegekaJG/AL-Go-Actions/ReadSettings@main
+        uses: cegekaJG/AL-Go-Actions/ReadSettings@cegeka
         with:
           shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
-        uses: cegekaJG/AL-Go-Actions/ReadSecrets@main
+        uses: cegekaJG/AL-Go-Actions/ReadSecrets@cegeka
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -137,7 +137,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -value "adminCenterApiCredentials=$adminCenterApiCredentials"
 
       - name: Create Development Environment
-        uses: cegekaJG/AL-Go-Actions/CreateDevelopmentEnvironment@main
+        uses: cegekaJG/AL-Go-Actions/CreateDevelopmentEnvironment@cegeka
         with:
           shell: powershell
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -149,7 +149,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@cegeka
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

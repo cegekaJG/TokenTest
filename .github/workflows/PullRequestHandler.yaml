@@ -3,6 +3,11 @@ name: 'Pull Request Build'
 on:
   pull_request_target:
     branches: [ 'main' ]
+    types:
+      - synchronize
+      - opened
+      - reopened
+      - ready_for_review
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -25,14 +30,14 @@ env:
 
 jobs:
   PregateCheck:
-    if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
+    if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request') && (github.event.pull_request.draft == false)
     runs-on: windows-latest
     steps:
-      - uses: cegekaJG/AL-Go-Actions/VerifyPRChanges@main
+      - uses: cegekaJG/AL-Go-Actions/VerifyPRChanges@cegeka
 
   Initialization:
     needs: [ PregateCheck ]
-    if: (!failure() && !cancelled())
+    if: (!failure() && !cancelled()) && (github.event.pull_request.draft == false)
     runs-on: [ windows-latest ]
     outputs:
       projects: ${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}
@@ -43,7 +48,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@main
+        uses: cegekaJG/AL-Go-Actions/DumpWorkflowInfo@cegeka
         with:
           shell: powershell
 
@@ -55,13 +60,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowInitialize@cegeka
         with:
           shell: powershell
 
       - name: Read settings
         id: ReadSettings
-        uses: cegekaJG/AL-Go-Actions/ReadSettings@main
+        uses: cegekaJG/AL-Go-Actions/ReadSettings@cegeka
         with:
           shell: powershell
 
@@ -72,7 +77,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: cegekaJG/AL-Go-Actions/DetermineProjectsToBuild@main
+        uses: cegekaJG/AL-Go-Actions/DetermineProjectsToBuild@cegeka
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -102,13 +107,13 @@ jobs:
 
   StatusCheck:
     needs: [ Initialization, Build ]
-    if: (!cancelled())
+    if: (!cancelled()) && (github.event.pull_request.draft == false)
     runs-on: [ windows-latest ]
     name: Pull Request Status Check
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: cegekaJG/AL-Go-Actions/PullRequestStatusCheck@main
+        uses: cegekaJG/AL-Go-Actions/PullRequestStatusCheck@cegeka
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -116,7 +121,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@main
+        uses: cegekaJG/AL-Go-Actions/WorkflowPostProcess@cegeka
         if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}
