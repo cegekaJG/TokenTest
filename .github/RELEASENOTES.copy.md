@@ -1,10 +1,4 @@
-## main
-
-### Issues
-
-- Issue 1241 Increment Version Number might produce wrong app.json
-
-## v6.0
+## testbranch6
 
 ### Issues
 
