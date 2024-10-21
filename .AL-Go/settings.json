@@ -10,4 +10,5 @@
       "authTokenSecret": "GHTOKENWORKFLOW",
       "projects": "*"
     }
+  ]
 }
