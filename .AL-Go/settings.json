@@ -2,5 +2,12 @@
   "country": "us",
   "appFolders": [],
   "testFolders": [],
-  "bcptTestFolders": []
+  "appDependencyProbingPaths": [
+    {
+      "repo": "https://github.com/freddydk/bcpttest",
+      "version": "1.5.0",
+      "release_status": "release",
+      "authTokenSecret": "GHTOKENWORKFLOW",
+      "projects": "*"
+    }
 }
